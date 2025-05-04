@@ -1,128 +1,114 @@
-# 🪨 RockVision Lite
-A lightweight real-time stone detection and classification system using YOLOv5, OpenCV, and UDP communication with Grasshopper.
+# RockVision Lite
+
+A Python + YOLOv8 + Grasshopper project for real-time rock type classification, mass estimation and spatial communication using UDP.
 
 ---
 
-## 📁 Repository Structure
+## 🔍 Features
+
+- Calibrate physical size using a notebook (28 cm)
+- Detect and classify rocks: **Igneous**, **Metamorphic**, **Sedimentary**
+- Estimate their mass using bounding box and density
+- Send data to **Grasshopper** (x, y, rock type, confidence, bounding box, radius, mass) via UDP
+- Real-time visualization
+
+---
+
+## 📁 Folder Structure
 
 ```
 RockVision_Lite/
-├── datasets/               # Datasets for training (optional)
-├── env/                    # Virtual environment (excluded from Git)
+├── datasets/
+├── env/                  # virtual environment (excluded via .gitignore)
 ├── models/
-│   ├── rock_model.pt       # YOLO model for rock classification
-│   └── notebook_model.pt   # YOLO model for calibration (notebook detection)
+│   ├── rock_model.pt
+│   └── notebook_model.pt
 ├── scripts/
-│   ├── main_rock_detection.py     # Main detection and UDP sender script
-│   ├── Udp_Rock_Sender.py         # Standalone version for sending rock data via UDP
-│   └── udp-import-rock-vision.gh  # Grasshopper script for receiving and parsing UDP data
-├── src/                    # Additional source files
-├── .gitignore
+│   ├── Udp_Rock_Sender.py     # main script (run this one)
+│   ├── udp-import-rock-vision.gh
+├── src/
 └── README.md
 ```
 
 ---
 
-## ⚙️ Requirements
+## 🚀 Getting Started
 
-- Python 3.12+
-- Git
-- Rhino + Grasshopper (for receiving data)
-- A working webcam
-
----
-
-## 🔧 Installation (Step-by-step)
-
-1. **Clone the repository**
+### 1. Clone the Repository
 
 ```bash
-git clone git@github.com:nachomonereo/RockVision_Lite.git
+git clone https://github.com/nachomonereo/RockVision_Lite.git
 cd RockVision_Lite
 ```
 
-2. **Create a virtual environment**
+### 2. Create and Activate Virtual Environment
 
-```bash
+```powershell
 python -m venv env
-.\env\Scriptsctivate   # PowerShell
+.\env\Scripts\Activate.ps1
 ```
 
-3. **Install dependencies**
+### 3. Install Requirements
 
 ```bash
-pip install -r requirements.txt
+pip install ultralytics opencv-python
 ```
 
-If `requirements.txt` is missing, manually install:
+---
+
+## 🧠 Model Training
+
+You can train your own models or use the one from:
+
+👉 [Rock Classification - Roboflow Dataset](https://universe.roboflow.com/bandrma-onyedi-eyll-niversitesi-byubb/rock-classification-bvis1?utm_source=chatgpt.com)
+
+---
+
+## ▶️ Run the Detection Script
 
 ```bash
-pip install ultralytics opencv-python numpy
+python scripts/Udp_Rock_Sender.py
 ```
 
-4. **Place the trained models**
-
-Ensure the following files are in the `models/` folder:
-
-- `rock_model.pt`
-- `notebook_model.pt`
-
----
-
-## ▶️ Run the Detection System
+Then open the Grasshopper file:
 
 ```bash
-cd scripts
-python main_rock_detection.py
+scripts/udp-import-rock-vision.gh
 ```
 
-The script:
-
-- Detects a notebook (used as a scale)
-- Calibrates pixels/cm
-- Detects rocks and sends: type, mass, radius, normalized position and bounding box via **UDP**
-
 ---
 
-## 🧠 Grasshopper Integration
+## 📡 UDP Format
 
-Open `udp-import-rock-vision.gh` in Grasshopper.
+The Python sender transmits a list of rocks like this:
 
-- Set the same UDP port (default: `5051`)
-- Toggle `Run` to start listening
-- Outputs:
-  - Normalized (x, y) position
-  - Rock type
-  - Confidence
-  - Estimated mass (kg)
-  - Bounding rectangle
-  - Inscribed circle radius
-
----
-
-## 📡 UDP Settings
-
-- IP: `127.0.0.1` (localhost) or local IP (e.g., `192.168.1.xxx`)
-- Port: `5051` (adjustable in both scripts)
-
----
-
-## 🧪 Optional: Train Your Own Models
-
-```bash
-yolo task=detect mode=train model=yolov5s.pt data=datasets/data.yaml epochs=100 imgsz=416
+```json
+[
+  {
+    "x": 0.48,
+    "y": 0.52,
+    "type": "Igneous",
+    "confidence": 0.91,
+    "mass": 1.24,
+    "radius": 3.1,
+    "rectangle": [x1, y1, x2, y2]
+  },
+  ...
+]
 ```
 
-Move the resulting `best.pt` model to the `models/` folder.
+---
+
+## 🛠 Troubleshooting
+
+- Run Grasshopper as administrator if UDP fails to bind
+- Make sure IP and port are matching
+- UDP port: `5051` by default
+- Avoid multiple bindings to same port (error 10048)
 
 ---
 
-## 🪪 License
+## 👨‍💻 Author
 
-MIT License © 2025 Nacho Monereo
-
----
-
-## 📬 Contact
-
-For questions or suggestions, open an issue or contact [nachomonereo](https://github.com/nachomonereo)
+Developed by [Nacho Monereo](https://nachomonereo.com)  
+Model trained using data from [Roboflow Rock Dataset](https://universe.roboflow.com/bandrma-onyedi-eyll-niversitesi-byubb/rock-classification-bvis1?utm_source=chatgpt.com)
