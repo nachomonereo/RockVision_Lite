@@ -1,0 +1,6 @@
+train: C:/Users/test/Documents/RockVision/datasets/rock_classification/train/images
+val: C:/Users/test/Documents/RockVision/datasets/rock_classification/valid/images
+test: C:/Users/test/Documents/RockVision/datasets/rock_classification/test/images
+
+nc: 3
+names: ['Igneous', 'Metamorphic', 'Sedimentary']

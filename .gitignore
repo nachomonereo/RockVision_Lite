@@ -1,0 +1,17 @@
+# Ignore virtual environments
+env/
+.env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
